@@ -4,7 +4,7 @@
 ###### 1.1、栈的基本概念
     1.1.1、栈的基本概念：   
     
-        栈（stack）:是限定仅在表尾进行插入和删除操作的线性表。
+        栈（stack）:是限定仅在表尾进行插入和删除操作的线å性表。
         
         栈顶（top）:线性表允许进行插入删除的那一端。
         
@@ -192,10 +192,110 @@
         出队操作:队不为空时，先取队头元素值，再将队头指针+1
         
     2.2.2、循环队列
-    
         
-###### 2.3、队列的链式存储
+        循环队列：把存储队列元素的表从逻辑上视为一个环。
+        当队首指针Q.front=MaxSize-1后，再前进一个位置就自动到0，这可以利用除法的取余运算%来实现。
+        
+        初始化时:Q.front = Q.rear = 0;
+        队首指针进1:Q.front = (Q.front + 1)%MaxSize
+        队尾指针进1:Q.rear = (Q.rear + 1)%MaxSize
+        队列长度:(Q.rear + MaxSize - Q.front)%MaxSize
+        
+        区分队空还是队满的情况：
+            1）牺牲一个单元来区分队空和队满，入队时少用一个队列单元。约定“对头指针再队尾的指针的下一个位置作为队满的标志”
+                队满条件：(Q.rear + 1)%MaxSize == Q.front
+                对空条件：Q.front = Q.rear
+                队中元素的个数：(Q.rear - Q.front + MaxSize)%MaxSize
+            2）类型中增设表示元素的个数的数据成员。
+                队空的条件：Q.size==0
+                队满的条件：Q.size==MaxSize
+            3）类型中增设tag数据成员，以区分是队满还是队空。
+                tag==0，若因删除导致Q.front==Q.rear则为队空。
+                tag==1，若因插入导致Q.front==Q.rear则为队满。
+                
+        循环队列的操作
+            1）初始化
+                void InitQueue(SqQueue &Q) {
+                    Q.rear = Q.front = 0;       //初始化队首、队尾指针
+                }
+                
+            2）判队空
+                bool isEmpty(SqQueue Q) {
+                    if (Q.rear == Q.front) return true;     //队空条件
+                    else return false;
+                }
+            
+            3）入队
+                bool EnQueue(SqQueue &Q,ElemType x) {
+                    if((Q.rear + 1))
+                }
+        
+        
+###### 2.3、队列的链式存储结构
+    2.2.1、队列的链式存储
+    
+        队列的链式表示称为链队列；
+        实际上是一个同时带有队头指针和队尾指针单链表。
+        
+        typedef struct {
+            EleType data;
+            struct LinkNode *next;
+        }LinkNode;
+        typedef struct {
+             LinkNode *front, *rear;
+        }LinkQueue;
+        
+    
+    2.2.2、链式队列的基本操作
+        1）初始化
+            void InitQueue(LinkQueue &Q) {
+                Q.front = Q.rear = (LinkQueue *)malloc(siziof(LinkNode));
+                Q.front -> next = NULL;
+            }
+            
+        2）判空操作
+            bool IsEmpty(LinkQueue Q) {
+                if (Q.front == Q.rear) return true;
+                else return false;
+            }
+        
+        3）入队操作
+            void EnQueue(LinkQueue &Q,ElemType x) {
+                LinkNode *s = (LinkQueue *)malloc(sizeof(LinkNode));
+                s -> data = x;
+                s -> next = NULL;
+                Q.rear -> next = s;
+                Q.rear = s;
+            }
+            
+        4）出队操作
+            bool DeQueue(LinkQueue &Q,ElemType &x){
+                if (Q.front == Q.rear) return false; //空队
+                LinkNode *p = Q.front -> next;
+                x = p -> data;
+                Q.front -> next = p -> next;
+                if (Q.rear == p) {
+                    Q.rear = Q.front;
+                }
+                free(p);
+                return true;
+            }
 ###### 2.4、双端队列
+
+    2.4.1、双端队列的概念及分类
+        
+        双端队列:是指允许两端都可以进行入队和出队操作的队列。其元素的逻辑结构也是线性结构。
+        
+        分类：正常的双端队列；输出受限的双端队列；输入受限的双端队列。
+        
+    2.4.2、输出受限的双端队列
+        
+        允许在一端进行插入和删除，但在另一端只允许插入操作。
+        
+    2.4.3、输入受限的双端队列
+    
+        允许在一端进行插入和删除，但在另一端只允许删除操作。
+        
 #### 3、栈和队列的应用
 ###### 3.1、栈在括号匹配中的应用
 ###### 3.2、栈在表达式求值中的应用
